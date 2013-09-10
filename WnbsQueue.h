@@ -2,20 +2,18 @@
 #define __LIB_ADT_WNBSQUEUE_H__
 
 #include "Chain.h"
-
-//#include "hw/hal/CPU.h"
-
 #include "queue.h"
 
 #ifndef CAS
 	#define CAS(p, o, n) \
-		hw::hal::CPU::cas((uintptr_t*) (p), (uintptr_t) (o), (uintptr_t) (n))
+		__sync_bool_compare_and_swap((uintptr_t*) (p), (uintptr_t) (o), (uintptr_t) (n))
+
 #endif
 
 
 typedef Chain Chain_p;
 
-class WnbsQueue : Queue {
+class WnbsQueue : public Queue {
 	Chain head;
 	Chain* tail;
 	static const uint32_t ABA_MASK = 0x3;
@@ -24,12 +22,12 @@ public:
 	void enqueue(Chain_p *item);
 	Chain_p* dequeue();
 	static Chain *abaIndex (Chain_p* item) {
-		return (Chain *)((unsigned int)item & ~ABA_MASK);
+		return (Chain *)((intptr_t)item & ~ABA_MASK);
 	}
 
 private: 
 	static Chain_p* aba_wheel (Chain_p* item) {
-		return (Chain_p *)((unsigned int)item ^ ABA_MASK == 1 ? 1 : 0);
+		return (Chain_p *)((intptr_t)item ^ ABA_MASK == 1 ? 1 : 0);
 	}
 
 };

@@ -55,18 +55,22 @@ public:
 */
 	static void go(int ops, Queue *nq, Queue *dq){
 		//fuehre ops mal aus, je eine de- und enqueue op.
+
 		for(int i=0; i<ops; i++){
-			(*nq).enqueue((*dq).dequeue());
+			Chain *c;
+			while (!(c = dq->dequeue()));
+			nq->enqueue(c);
+			cout << "go: " << i << endl;
 		}
 	}
 
 
 
-	long starttest(){
-		//startet threads threads,
+	long starttest_oneway(){
+		//startet threads,
 		//fuehre insgesamt ops en- und dequeue-Operationen durch.
 		//liefert die benoetigte Zeit zurueck
-		
+		//funktioniert nur in eine richtung	
 
 
 		//calculate operations per thread
@@ -89,12 +93,51 @@ public:
 		//join threads
 		for (i=0; i<threads; i++){
 			thrarray[i].join();
+//			i--; //endlosscheife
 		}
 
 
 	}
 
-	
+	long starttest_twoways(int a){
+
+		//WARNUNG: kann zu deadlock fuehren, da operationen pro thread beschraenkt
+		//fuehre insgesamt ops en- und dequeue-Operationen durch.
+		//liefert die benoetigte Zeit zurueck
+		//a threads von dq nach nq, der rest andersrum
+		//beim start wird jeder zweite thread andersrum eingefuegt
+
+
+		//calculate operations per thread
+		int opt;
+		int rest;	//anzahl an threads, die eine operation mehr machen
+
+		opt = ops/threads;
+		rest = ops%threads;
+
+		//start treads
+		thread* thrarray = new thread[threads]();
+		int i;
+		for (i=0; i<rest; i++){
+			if(i%2) thrarray[i]= thread(go, opt+1, nq, dq);
+			else thrarray[i]= thread(go, opt+1, dq, nq);
+
+		}
+		for(;i<threads;i++){
+			if(i%2) thrarray[i]= thread(go, opt, nq, dq);
+			else thrarray[i]= thread(go, opt, dq, nq);
+
+		}
+
+		//join threads
+		for (i=0; i<threads; i++){
+			thrarray[i].join();
+//			i--; //endlosscheife
+		}
+
+
+	}
+
 };
 
 	

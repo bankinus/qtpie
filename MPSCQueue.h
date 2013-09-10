@@ -2,9 +2,6 @@
 #define __MPSCQUEUE_H__
 
 #include "Chain.h"
-#include <ListIterator>
-#include "hw/hal/CPU.h"
-
 
 
 #include "queue.h"
@@ -12,7 +9,7 @@
 
 #ifndef CAS
 	#define CAS(p, o, n) \
-		hw::hal::CPU::cas((uintptr_t*) (p), (uintptr_t) (o), (uintptr_t) (n))
+		__sync_bool_compare_and_swap((uintptr_t*) (p), (uintptr_t) (o), (uintptr_t) (n))
 #endif
 
 
