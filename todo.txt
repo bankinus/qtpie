@@ -1,0 +1,57 @@
+Folien (20 min Vortrag + 10 min Diskussion)
+
+	Projektvorstellung: LAOS + Octopos
+	Realisierung durch NB-Queues
+	Vorstellung einzelner Queuevarianten
+	Aufgabenstellung/Zielsetzung
+	Projektplanung
+
+Aufgabe
+	NB-Queues in einheitliches Testsystem integrieren
+	Tests und Messungen
+	Weitere Varianten implementieren
+
+Zeitplanung
+vorher	einzelne Queues verstehen
+		MS-Queue
+		Wosh-Queue
+		MPSC-Queue
+		Simplequeue
+		irq-queue
+		Haswell-Transaktionen
+Mo	Arbeitsumgebung einrichten
+Mo-Mi	Testsystem
+		Testsystem implementieren
+		Queues in Testsystem einfügen
+		erste Tests mit gebebenen Queues
+		Tests auf verschiedenen Architekturen
+		Testsystem debuggen und fertigstellen
+Mi-Fr	Queue-Varianten implementieren
+		MS-Queue aus dem Paper
+		Simplequeue mit spinlocks
+		Simplequeue mit pthread-mutex
+		Simplequeue mit transaktionen (haswell)
+		Two-Lock-Queue mit spinlocks
+		Two-Lock-Queue mit pthread-mutex
+		Two-Lock-Queue mit transaktionen (haswell)
+		evtl. weitere
+Mo-Mi	Testreihe
+		Architekturen:
+			4/8 Kerne
+			bigbox
+			haswell (zum Vergleich mit Transaktionen)
+		Queues: siehe Varianten
+			Schwierigkeit: Vergleichbarkeit
+		Situationen:
+			Anzahl Prozesse variieren
+			eine Queue (verschiedene Daten)
+			eine Queue (was rauskommt, kommt gleich wieder rein)
+			zwei Queues (alternierend)
+			(Single-Producer-Single-Consumer)
+			Single-Producer-Multiple-Consumer
+			Multiple-Producer-Single-Consumer
+			Multiple-Producer-Multiplle-Consumer
+			irqqueues?
+		unter Umständen Testsystem erweitern
+Do	Ergebnisse zusammenstellen und bewerten, Vortrag ausarbeiten
+Fr	Ergebnisse vorstellen
