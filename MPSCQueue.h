@@ -7,8 +7,8 @@
 #include "queue.h"
 
 
-#ifndef CAS
-	#define CAS(p, o, n) \
+#ifndef WOSCH_CAS
+	#define WOSCH_CAS(p, o, n) \
 		__sync_bool_compare_and_swap((uintptr_t*) (p), (uintptr_t) (o), (uintptr_t) (n))
 #endif
 
@@ -29,14 +29,14 @@ inline void MPSCQueue::enqueue(Chain* item) {
 	item->next = 0;		/* make item last chain element */
 	do {
 		last = tail;
-	} while (!CAS(&tail, last, &(item->next)));
+	} while (!WOSCH_CAS(&tail, last, &(item->next)));
 	*last = item;		//CAS successful, so I can now link safely
 }
 
 inline Chain* MPSCQueue::dequeue() {
 	Chain* volatile item;
 	if ((item = next) && !(next = item->next)) {
-		if (!CAS(&tail, &(item->next), &next)) {
+		if (!WOSCH_CAS(&tail, &(item->next), &next)) {
 			while(item->next == 0) { }
 			next = item->next;
 		}

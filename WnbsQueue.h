@@ -4,8 +4,8 @@
 #include "Chain.h"
 #include "queue.h"
 
-#ifndef CAS
-	#define CAS(p, o, n) \
+#ifndef WOSCH_CAS
+	#define WOSCH_CAS(p, o, n) \
 		__sync_bool_compare_and_swap((uintptr_t*) (p), (uintptr_t) (o), (uintptr_t) (n))
 
 #endif
@@ -43,9 +43,9 @@ void WnbsQueue::enqueue(Chain_p *item) {
 
 	do {
 		self = (last = this->tail)->next;		/* draw copies as needed */
-	} while (!CAS(&this->tail, last, item));
+	} while (!WOSCH_CAS(&this->tail, last, item));
 
-	if (!CAS(&last->next, self, item)) {		/* last removed by fetch */
+	if (!WOSCH_CAS(&last->next, self, item)) {		/* last removed by fetch */
 		this->head.next = item;			/* item becomes new head */
 	}
 }
@@ -55,11 +55,11 @@ Chain_p* WnbsQueue::dequeue() {
 	Chain_p* next;
 
 	do if (abaIndex((node = this->head.next)) == 0) return 0;
-	while (!CAS(&this->head.next, node, ((next = abaIndex(node)->next) == node ? 0 : next)));
+	while (!WOSCH_CAS(&this->head.next, node, ((next = abaIndex(node)->next) == node ? 0 : next)));
 
 	if (next == node) {	/* last element just removed, be careful */
-		if (!CAS(&node->next, next, 0)) this->head.next = abaIndex(node)->next;
-		else CAS(&this->tail, &node->next, &this->head);
+		if (!WOSCH_CAS(&node->next, next, 0)) this->head.next = abaIndex(node)->next;
+		else WOSCH_CAS(&this->tail, &node->next, &this->head);
 	}
 
 	return node;
