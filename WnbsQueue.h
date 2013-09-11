@@ -27,7 +27,7 @@ public:
 
 private: 
 	static Chain_p* aba_wheel (Chain_p* item) {
-		return (Chain_p *)((intptr_t)item ^ ABA_MASK == 1 ? 1 : 0);
+		return ((intptr_t)item ^ ABA_MASK == 1 ? (Chain_p *)1 : (Chain_p *)0);
 	}
 
 };
