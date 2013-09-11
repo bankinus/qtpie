@@ -3,9 +3,13 @@
 
 #include "test_round.h"
 #include "Chain.h"
+<<<<<<< HEAD
 #include "simplequeue.h"
 #include "WnbsQueue.h"
 #include "MPSCQueue.h"
+=======
+#include "msqueue.h"
+>>>>>>> a04a12390e04d89340b72d9b22dbf0930855f67c
 
 using namespace std;
 
@@ -13,14 +17,17 @@ int main(){
 	
 	cout << "test beginnt" << endl;
 	//queues erstellen
-	SimpleQueue *q1 = new SimpleQueue();
-	SimpleQueue *q2 = new SimpleQueue();
+	SimpleQueue *sq1 = new SimpleQueue();
+	SimpleQueue *sq2 = new SimpleQueue();
 	
-	WnbsQueue *q3 = new WnbsQueue();
-	WnbsQueue *q4 = new WnbsQueue();
+	WnbsQueue *wq1 = new WnbsQueue();
+	WnbsQueue *wq2 = new WnbsQueue();
 
-	MPSCQueue *q5 = new MPSCQueue();
-	MPSCQueue *q6 = new MPSCQueue();
+	MPSCQueue *mpq1 = new MPSCQueue();
+	MPSCQueue *mpq2 = new MPSCQueue();
+
+	MSQueue *msq1 = new MSQueue();
+	MSQueue *msq2 = new MSQueue();
 
 	//test_round erstellen
 //	Test_round t1(q1,q1,0,20,5,200);

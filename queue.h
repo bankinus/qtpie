@@ -2,7 +2,6 @@
 #define QUEUE_H
 
 #include "Chain.h"
-#include <iostream>
 
 class Queue{
 	public:

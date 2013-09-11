@@ -2,18 +2,18 @@
 
 #include "config.h"
 #include "constants.h"
-#include "queues/cpointer.h"
+#include "cpointer.h"
 #include "queue.h"
 #include "Chain.h"
 
 #define T Chain
 
-class MSQueue:Queue
+class MSQueue : public Queue
 {
 	public:
-    CPointer<T> head;
-    CPointer<T> tail;
-	T dummy;
+	CPointer<Chain> head;
+	CPointer<Chain> tail;
+	Chain dummy;
 
 	MSQueue() INLINE_ATTR {head.setPtr(&dummy); tail.setPtr(&dummy);}
 
@@ -22,9 +22,9 @@ class MSQueue:Queue
 		for(;;)
 		{
 			//get local copies
-			CPointer<T> chead = head;
-			CPointer<T> ctail = tail;
-			CPointer<T> next = chead.getPtr()->next;
+			CPointer<Chain> chead = head;
+			CPointer<Chain> ctail = tail;
+			CPointer<Chain> next = chead.getPtr()->cnext;
 
 			//this is important, check if copies are consistent
 			if(unlikely(chead != head))
@@ -39,16 +39,16 @@ class MSQueue:Queue
 		}
 	}
 
-	void enqueue(T *chain) volatile INLINE_ATTR
+	void enqueue(Chain *chain) volatile INLINE_ATTR
 	{
-		chain->next.setCounter(chain->next.getCounter() + 1);//incrementing the counter may not be important... do it anyways
-		chain->next.setPtr(0);//set next to 0, indicating the last element of the queue
+		chain->cnext.setCounter(chain->cnext.getCounter() + 1);//incrementing the counter may not be important... do it anyways
+		chain->cnext.setPtr(0);//set next to 0, indicating the last element of the queue
 
 		for(;;)
 		{
 			//get local copies
-			CPointer<T> ctail = tail;
-			CPointer<T> next = ctail.getPtr()->next;
+			CPointer<Chain> ctail = tail;
+			CPointer<Chain> next = ctail.getPtr()->cnext;
 
 			//this is important, check if copies are consistent
 			if(unlikely(ctail != tail))
@@ -56,12 +56,12 @@ class MSQueue:Queue
 
 			if(next.getPtr() == 0)//enqueueing at end of queue
 			{
-				CPointer<T> cnext(chain, next.getCounter() + 1);
-				if(likely(CPointer<T>::CAS(&(ctail.getPtr()->next), next, cnext)))
+				CPointer<Chain> cnext(chain, next.getCounter() + 1);
+				if(likely(CPointer<Chain>::CAS(&(ctail.getPtr()->cnext), next, cnext)))
 				{
 					//this is not needed in general, but in this system, leave it here
-					CPointer<T> tnext(chain, ctail.getCounter() + 1);
-					CPointer<T>::CAS(&(tail), ctail, tnext);
+					CPointer<Chain> tnext(chain, ctail.getCounter() + 1);
+					CPointer<Chain>::CAS(&(tail), ctail, tnext);
 					//
 					break;//successfully enqueued, done
 				}
@@ -71,19 +71,19 @@ class MSQueue:Queue
 
 			//else tail is falling behind
 			//advance it to next
-			CPointer<T> tnext(next.getPtr(), ctail.getCounter() + 1);
-			CPointer<T>::CAS(&(tail), ctail, tnext);
+			CPointer<Chain> tnext(next.getPtr(), ctail.getCounter() + 1);
+			CPointer<Chain>::CAS(&(tail), ctail, tnext);
 		}
 	}
 
-	T* dequeue() volatile INLINE_ATTR
+	Chain* dequeue() volatile INLINE_ATTR
 	{
 		for(;;)
 		{
 			//get local copies
-			CPointer<T> chead = head;
-			CPointer<T> ctail = tail;
-			CPointer<T> next = chead.getPtr()->next;
+			CPointer<Chain> chead = head;
+			CPointer<Chain> ctail = tail;
+			CPointer<Chain> next = chead.getPtr()->cnext;
 
 			//this is important, check if copies are consistent
 			if(unlikely(chead != head))
@@ -95,23 +95,23 @@ class MSQueue:Queue
 					return 0;
 
 				//tail is falling behind, advance it, try again
-				CPointer<T> tnext(next.getPtr(), ctail.getCounter() + 1);
-				CPointer<T>::CAS(&(tail), ctail, tnext);
+				CPointer<Chain> tnext(next.getPtr(), ctail.getCounter() + 1);
+				CPointer<Chain>::CAS(&(tail), ctail, tnext);
 				continue;
 			}
 
 			//else there are elements in the queue try to advance head pointer
-			CPointer<T> hnext(next.getPtr(), chead.getCounter() + 1);
-			if(likely(CPointer<T>::CAS(&(head), chead, hnext)))
+			CPointer<Chain> hnext(next.getPtr(), chead.getCounter() + 1);
+			if(likely(CPointer<Chain>::CAS(&(head), chead, hnext)))
 			{
 				//here we successfully dequeued an element
 				//the pointer is volatile because &(dummy)
 				//is volatile too and they get compared later
-				T * volatile outchain = chead.getPtr();
+				Chain * volatile outchain = chead.getPtr();
 
 				//incrementing the counter may not be important... do it anyways
-				outchain->next.setCounter(outchain->next.getCounter() + 1);
-				outchain->next.setPtr(0);
+				outchain->cnext.setCounter(outchain->cnext.getCounter() + 1);
+				outchain->cnext.setPtr(0);
 
 				//if it is not the dummy node return element
 				if(outchain != &(dummy))

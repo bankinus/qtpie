@@ -3,8 +3,6 @@ Jede Threadinstanz fuehr dequeue auf einer Queue aus,
 und fuehrt daraufhin mit dem entnommenen Objekt eine
 enqueue Operation auf der anderen Queue aus.
 Die Queues koennen identisch sein.
-
-dq muss zu beginn mit Daten gefuellt sein.
 */
 
 #include <iostream>
