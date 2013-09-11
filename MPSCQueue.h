@@ -13,17 +13,15 @@
 #endif
 
 
-class MPSCQueue : public Chain {
+class MPSCQueue : public Queue {
 	Chain** tail;
+	Chain* volatile next;
 public:
-	MPSCQueue() : Chain(0), tail((Chain**volatile)&next) { }
+	//MPSCQueue() : Chain(0), tail((Chain**volatile)&next) { }
+	MPSCQueue() : next(0), tail((Chain**volatile)&next) { }
 	void enqueue(Chain* item);
 	Chain* dequeue();
 	Chain* peek() const { return (Chain*) next; }
-	ListIterator begin() {
-		return ListIterator(const_cast<Chain*>(next), this);
-	}
-	Chain* remove(ListIterator& it);
 };
 
 inline void MPSCQueue::enqueue(Chain* item) {
@@ -33,7 +31,6 @@ inline void MPSCQueue::enqueue(Chain* item) {
 		last = tail;
 	} while (!CAS(&tail, last, &(item->next)));
 	*last = item;		//CAS successful, so I can now link safely
-	dLabel(MPSCenqueue);
 }
 
 inline Chain* MPSCQueue::dequeue() {
@@ -45,22 +42,6 @@ inline Chain* MPSCQueue::dequeue() {
 		}
 	}
 	return (Chain*)item;
-}
-
-inline Chain* MPSCQueue::remove(ListIterator& it) {
-	Chain* volatile item = it.getElement();
-	Chain** volatile prevLink = const_cast<Chain** volatile>(&(it.getPrevElement()->next));
-	if ((item != 0) && !(*prevLink = item->next)) {
-		if (!CAS(&tail, &(item->next), prevLink)) {
-			while(item->next == 0) { }
-			*prevLink = item->next;
-		}
-	}
-	return (Chain*)item;
-}
-
-}
-
 }
 
 #endif
