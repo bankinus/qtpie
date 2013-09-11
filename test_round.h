@@ -13,9 +13,9 @@ dq muss zu beginn mit Daten gefuellt sein.
 #include <chrono>
 #include <functional>
 #include <atomic>
+#include <ctime>
 #include "queue.h"	//selbst bauen, hier mus class Queue definiert sein
 #include "Chain.h"
-
 
 
 using namespace std;
@@ -60,13 +60,13 @@ public:
 			Chain *c;
 			while (!(c = dq->dequeue()));
 			nq->enqueue(c);
-			cout << "go: " << i << endl;
+//			cout << "go: " << i << endl;
 		}
 	}
 
 
 
-	long starttest_oneway(){
+	double starttest_oneway(){
 		//startet threads,
 		//fuehre insgesamt ops en- und dequeue-Operationen durch.
 		//liefert die benoetigte Zeit zurueck
@@ -83,6 +83,10 @@ public:
 		//start treads
 		thread* thrarray = new thread[threads]();
 		int i;
+
+		time_t begin;
+		time_t end;
+		begin = time(NULL);
 		for (i=0; i<rest; i++){
 			thrarray[i]= thread(go, opt+1, nq, dq);
 		}
@@ -96,7 +100,8 @@ public:
 //			i--; //endlosscheife
 		}
 
-
+		end = time(NULL);
+		return difftime(end, begin);
 	}
 
 	long starttest_twoways(int a){
