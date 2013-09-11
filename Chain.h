@@ -12,5 +12,6 @@ public:
 		Chain* volatile next;
 		CPointer<Chain> cnext;
 	};
+	void* data;
 };
 #endif
