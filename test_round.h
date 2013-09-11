@@ -26,7 +26,7 @@ public:
 	int threads;
 	int ops;
 
-	Test_round(Queue *nq, Queue *dq, int nq_inhalt, int dq_inhalt, int threads, int ops) : nq(nq), dq(dq), threads(threads), ops(ops) {	//zwei Queues
+	Test_round(Queue *nq, Queue *dq, long nq_inhalt, long dq_inhalt, int threads, long ops) : nq(nq), dq(dq), threads(threads), ops(ops) {	//zwei Queues
 		//queues fuellen mit entprechender anzahl an elementen
 
 		Chain* chains = new Chain[nq_inhalt+dq_inhalt]();
@@ -41,16 +41,11 @@ public:
 			(*dq).enqueue(&chains[nq_inhalt+i]);
 		}
 	}
-/*
-	Test_round(Queue<lib::adt::Chain> nq, Queue<lib::adt::Chain> dq, int dq_inhalt, int threads, int ops) {
-		Test_round(nq,dq,0,dq_inhalt,threads,ops);
-	}
+	Test_round(Queue *q, long inhalt, int threads, long ops) :
+		Test_round(q,q,0,inhalt,threads,ops)
+	{}			//eine Queue
 
-	Test_round(Queue<lib::adt::Chain> q, int inhalt, int threads, int ops) {
-		Test_round(q,q,0,inhalt,threads,ops);
-	}			//eine Queue
 
-*/
 	static void go(int ops, Queue *nq, Queue *dq){
 		//fuehre ops mal aus, je eine de- und enqueue op.
 
@@ -64,7 +59,7 @@ public:
 
 
 
-	double starttest_oneway(){
+	long starttest_oneway(){
 		//startet threads,
 		//fuehre insgesamt ops en- und dequeue-Operationen durch.
 		//liefert die benoetigte Zeit zurueck
