@@ -77,9 +77,10 @@ public:
 		thread* thrarray = new thread[threads]();
 		int i;
 
-		time_t begin;
-		time_t end;
-		begin = time(NULL);
+		struct timespec begin;
+		struct timespec end;
+		clock_gettime(CLOCK_MONOTONIC, &begin);
+
 		for (i=0; i<rest; i++){
 			thrarray[i]= thread(go, opt+1, nq, dq);
 		}
@@ -93,8 +94,16 @@ public:
 //			i--; //endlosscheife
 		}
 
-		end = time(NULL);
-		return difftime(end, begin);
+		clock_gettime(CLOCK_MONOTONIC, &end);
+		time_t sec;
+		long nsec;
+		sec = end.tv_sec - begin.tv_sec;
+		nsec = end.tv_nsec - begin.tv_nsec;
+
+		nsec /= 1000000;
+		sec *= 1000;
+		return sec+nsec;
+
 	}
 
 	long starttest_twoways(int a){
