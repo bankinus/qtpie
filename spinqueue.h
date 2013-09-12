@@ -19,7 +19,7 @@ class SpinQueue : public Queue {
 
 	public:
 	SpinQueue() INLINE_ATTR : head(0), tail(&head) {
-		nqlock = new Spinlock();
+		qlock = new Spinlock();
 	}
 
 	void enqueue(Chain *chain) INLINE_ATTR
