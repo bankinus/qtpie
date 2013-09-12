@@ -22,6 +22,10 @@ class SpinQueue : public Queue {
 		qlock = new Spinlock();
 	}
 
+	~SpinQueue() {
+		delete qlock;
+	}
+
 	void enqueue(Chain *chain) INLINE_ATTR
 	{
 		chain->next = 0;

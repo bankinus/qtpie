@@ -55,6 +55,12 @@ public:
 		}
 	}	
 
+	void cleanup(){
+		delete[] beginchains;
+		if (!nodata)
+			delete[] endchains;
+	}
+
 	static void go_cons(long ops, long &index, Queue *q, Chain *chains){
 		//entfernt daten aus q
 		//consumer
@@ -146,9 +152,11 @@ public:
 		long nsec;
 		sec = end.tv_sec - begin.tv_sec;
 		nsec = end.tv_nsec - begin.tv_nsec;
-
 		nsec /= 1000000;
 		sec *= 1000;
+
+		delete[] thrarraycons;
+		delete[] thrarrayprods;
 		return sec+nsec;
 
 	}

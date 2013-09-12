@@ -28,11 +28,13 @@ public:
 	Queue* dq;	//Queue to dequeue
 	int threads;
 	long ops;
+	Chain* chains;
+
 
 	Test_round(Queue *nq, Queue *dq, long nq_inhalt, long dq_inhalt, int threads, long ops) : nq(nq), dq(dq), threads(threads), ops(ops) {	//zwei Queues
 		//queues fuellen mit entprechender anzahl an elementen
 
-		Chain* chains = new Chain[nq_inhalt+dq_inhalt]();
+		chains = new Chain[nq_inhalt+dq_inhalt]();
 		
 		for(long i=0; i<nq_inhalt; i++){
 			chains[i]= Chain();
@@ -48,6 +50,9 @@ public:
 		Test_round(q,q,0,inhalt,threads,ops)
 	{}			//eine Queue
 
+	void cleanup(){
+		delete[] chains;
+	}
 
 	static void go(long ops, Queue *nq, Queue *dq){
 		//fuehre ops mal aus, je eine de- und enqueue op.
@@ -97,14 +102,17 @@ public:
 //			i--; //endlosscheife
 		}
 
+
+
 		clock_gettime(CLOCK_MONOTONIC, &end);
 		time_t sec;
 		long nsec;
 		sec = end.tv_sec - begin.tv_sec;
 		nsec = end.tv_nsec - begin.tv_nsec;
-
 		nsec /= 1000000;
 		sec *= 1000;
+		
+		delete[] thrarray;
 		return sec+nsec;
 
 	}

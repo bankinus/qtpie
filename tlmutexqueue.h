@@ -17,16 +17,22 @@ class TLMutexQueue : public Queue {
 
 	mutex *nqlock;
 	mutex *dqlock;
-	Chain c;
+	Chain *c;
 
 
 	public:
 	TLMutexQueue() INLINE_ATTR {
 		c = new Chain(0);
-		head = &c;
-		tail = &c;
+		head = c;
+		tail = c;
 		nqlock = new mutex();
 		dqlock = new mutex();
+	}
+
+	~TLMutexQueue(){
+		delete c;
+		delete nqlock;
+		delete dqlock;
 	}
 
 	void enqueue(Chain *chain) INLINE_ATTR volatile
