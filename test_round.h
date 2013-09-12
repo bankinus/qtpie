@@ -24,19 +24,19 @@ public:
 	Queue* nq;	//Queue to enqueue
 	Queue* dq;	//Queue to dequeue
 	int threads;
-	int ops;
+	long ops;
 
 	Test_round(Queue *nq, Queue *dq, long nq_inhalt, long dq_inhalt, int threads, long ops) : nq(nq), dq(dq), threads(threads), ops(ops) {	//zwei Queues
 		//queues fuellen mit entprechender anzahl an elementen
 
 		Chain* chains = new Chain[nq_inhalt+dq_inhalt]();
 		
-		for(int i=0; i<nq_inhalt; i++){
+		for(long i=0; i<nq_inhalt; i++){
 			chains[i]= Chain();
 			(*nq).enqueue(&chains[i]);
 		}
 
-		for(int i=0; i<dq_inhalt; i++){
+		for(long i=0; i<dq_inhalt; i++){
 			chains[nq_inhalt+i]= Chain();
 			(*dq).enqueue(&chains[nq_inhalt+i]);
 		}
@@ -46,10 +46,10 @@ public:
 	{}			//eine Queue
 
 
-	static void go(int ops, Queue *nq, Queue *dq){
+	static void go(long ops, Queue *nq, Queue *dq){
 		//fuehre ops mal aus, je eine de- und enqueue op.
 
-		for(int i=0; i<ops; i++){
+		for(long i=0; i<ops; i++){
 			Chain *c;
 			while (!(c = dq->dequeue()));
 			nq->enqueue(c);
@@ -67,15 +67,15 @@ public:
 
 
 		//calculate operations per thread
-		int opt;
-		int rest;	//anzahl an threads, die eine operation mehr machen
+		long opt;
+		long rest;	//anzahl an threads, die eine operation mehr machen
 
 		opt = ops/threads;
 		rest = ops%threads;
 
 		//start treads
 		thread* thrarray = new thread[threads]();
-		int i;
+		long i;
 
 		struct timespec begin;
 		struct timespec end;
@@ -105,7 +105,7 @@ public:
 		return sec+nsec;
 
 	}
-
+/*
 	long starttest_twoways(int a){
 
 		//WARNUNG: kann zu deadlock fuehren, da operationen pro thread beschraenkt
@@ -144,7 +144,7 @@ public:
 
 
 	}
-
+*/
 };
 
 	
