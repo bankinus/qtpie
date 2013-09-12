@@ -6,9 +6,9 @@
 #include "queues.h"
 
 
-#define NUMBA 200
+#define NUMBA 1<<25
 //#define WOSCH
-//#define HASWELL
+#define HASWELL
 
 using namespace std;
 
