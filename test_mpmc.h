@@ -1,3 +1,6 @@
+#ifndef TEST_MPSC
+#define TEST_MPSC
+
 /* Test fuer eine Queue.
 Jede Threadinstanz fuehr enqueue auf der Queue aus,
 ein einzelner thread entnimmt die Objekte wieder.
@@ -150,7 +153,7 @@ public:
 	}
 };
 
-	
+#endif	
 
 
 

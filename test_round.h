@@ -1,3 +1,6 @@
+#ifndef TEST_ROUND
+#define TEST_ROUND
+
 /* Test fuer eine oder mehrere Queues.
 Jede Threadinstanz fuehr dequeue auf einer Queue aus,
 und fuehrt daraufhin mit dem entnommenen Objekt eine
@@ -147,7 +150,7 @@ public:
 */
 };
 
-	
+#endif	
 
 
 
