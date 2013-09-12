@@ -46,8 +46,8 @@ class TLTransQueue : public Queue {
 		
 
 		//lock or begin transaction;
-		XFAIL(lock1);
-		XBEGIN(lock1);
+		XFAIL(lock2);
+		XBEGIN(lock2);
 			newhead	= head->next;
 			if (newhead == 0){
 				XEND();
