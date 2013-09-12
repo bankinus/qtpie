@@ -9,6 +9,7 @@
 #include "MPSCQueue.h"
 #include "msqueue.h"
 #include "spinqueue.h"
+#include "transqueue.h"
 #include "tests.h"
 #include "queues.h"
 
@@ -27,12 +28,11 @@ int main(){
 //blocking queue
 
 
-	Spinqueue *spin1 = new Spinqueue();
+	SpinQueue *spin1 = new SpinQueue();
 	Test_mpmc c1(spin1, 5, NUMBA);
 	cout << "test msmc mit spinqueue beginnt" << endl;
 	time = c1.starttest();
 	cout << "Zeit benoetigt: " << time << "ms" << endl;
-
 
 //nonblocking queues
 	
@@ -58,6 +58,15 @@ int main(){
 	time = c4.starttest();
 	cout << "Zeit benoetigt: " << time << "ms" << endl;
 
+/*
+	//transaction queue
+
+	TransQueue *trans1 = new TransQueue();
+	Test_mpmc c5(trans1, 5, NUMBA);
+	cout << "test msmc mit transqueue beginnt" << endl;
+	time = c5.starttest();
+	cout << "Zeit benoetigt: " << time << "ms" << endl;
+*/
 
 
 //test_round erstellen
@@ -65,7 +74,7 @@ int main(){
 //blocking queue
 
 
-	Spinqueue *spin2 = new Spinqueue();
+	SpinQueue *spin2 = new SpinQueue();
 	Test_round t1(spin2,20,5,NUMBA);
 	cout << "test round mit spinqueue beginnt" << endl;
 	time = t1.starttest();
@@ -87,6 +96,16 @@ int main(){
 	Test_round t3(wq2,20, 5, NUMBA);
 	cout << "test round mit woschqueue beginnt" << endl;
 	time = t3.starttest();
+	cout << "Zeit benoetigt: " << time << "ms" << endl;
+*/
+
+/*
+	//transaction queue
+
+	TransQueue *trans2 = new TransQueue();
+	Test_round t5(trans1,20, 5, NUMBA);
+	cout << "test round mit transqueue beginnt" << endl;
+	time = t5.starttest();
 	cout << "Zeit benoetigt: " << time << "ms" << endl;
 */
 
