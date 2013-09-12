@@ -16,18 +16,18 @@ typedef Chain Chain_p;
 class WnbsQueue : public Queue {
 	volatile Chain head;
 	volatile Chain* tail;
-	static const uint32_t ABA_MASK = 0x3;
+	static const uintptr_t ABA_MASK = 0x1;
 public:
 	WnbsQueue() { head.next = 0; tail = &head; }
 	void enqueue(Chain_p *item);
 	Chain_p* dequeue();
 	static Chain *abaIndex (Chain_p* item) {
-		return (Chain *)((intptr_t)item & ~ABA_MASK);
+		return (Chain *)((uintptr_t)item & ~ABA_MASK);
 	}
 
 private: 
 	static Chain_p* aba_wheel (Chain_p* item) {
-		return ((intptr_t)item ^ ABA_MASK == 1 ? (Chain_p *)1 : (Chain_p *)0);
+		return ((uintptr_t)item ^ ABA_MASK == 1 ? (Chain_p *)1 : (Chain_p *)0);
 	}
 
 };
@@ -54,8 +54,12 @@ Chain_p* WnbsQueue::dequeue() {
 	Chain_p* node;
 	Chain_p* next;
 
-	do if (abaIndex((node = this->head.next)) == 0) return 0;
-	while (!WOSCH_CAS(&this->head.next, node, ((next = abaIndex(node)->next) == node ? 0 : next)));
+	do {
+		node = this->head.next;
+		if (abaIndex((node)) == 0) return 0;
+		next = abaIndex(node)->next;
+	}
+	while (!WOSCH_CAS(&this->head.next, node, (next == node ? 0 : next)));
 
 	if (next == node) {	/* last element just removed, be careful */
 		if (!WOSCH_CAS(&node->next, next, 0)) this->head.next = abaIndex(node)->next;
