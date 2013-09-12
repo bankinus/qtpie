@@ -9,6 +9,8 @@
 #include "MPSCQueue.h"
 #include "msqueue.h"
 #include "spinqueue.h"
+#include "tests.h"
+#include "queues.h"
 
 
 #define NUMBA 1<<20
@@ -60,7 +62,6 @@ int main(){
 
 //test_round erstellen
 
-
 //blocking queue
 
 
@@ -73,7 +74,6 @@ int main(){
 
 //nonblocking queues
   
-
 
 	MSQueue *msq2 = new MSQueue();
 	Test_round t2(msq2,20, 5, NUMBA);

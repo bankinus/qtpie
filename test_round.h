@@ -59,7 +59,7 @@ public:
 
 
 
-	long starttest_oneway(){
+	long starttest(){
 		//startet threads,
 		//fuehre insgesamt ops en- und dequeue-Operationen durch.
 		//liefert die benoetigte Zeit zurueck
