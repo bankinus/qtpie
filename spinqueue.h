@@ -7,7 +7,7 @@
 #include "spinlock.h"
 
 
-class SpinQueue : public Queue {
+class Spinqueue : public Queue {
 	private:
     Chain *head;
 	uint8_t paddingh[CACHE_ALIGN - sizeof(Chain*)];
@@ -18,7 +18,7 @@ class SpinQueue : public Queue {
 	Spinlock *dqlock;
 
 	public:
-	SpinQueue() INLINE_ATTR : head(0), tail(&head) {
+	Spinqueue() INLINE_ATTR : head(0), tail(&head) {
 		nqlock = new Spinlock();
 		dqlock = new Spinlock();
 	}
