@@ -14,8 +14,8 @@
 typedef Chain Chain_p;
 
 class WnbsQueue : public Queue {
-	Chain head;
-	Chain* tail;
+	volatile Chain head;
+	volatile Chain* tail;
 	static const uint32_t ABA_MASK = 0x3;
 public:
 	WnbsQueue() { head.next = 0; tail = &head; }
@@ -34,8 +34,8 @@ private:
 
 
 void WnbsQueue::enqueue(Chain_p *item) {
-	Chain* last;
-	Chain* self;
+	volatile Chain* last;
+	volatile Chain* self;
 
 	// assert(this && aba_index(item));
 
