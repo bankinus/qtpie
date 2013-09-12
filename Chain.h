@@ -13,5 +13,5 @@ public:
 		CPointer<Chain> cnext;
 	};
 	void* data;
-};
+} __attribute__ ((aligned (64)));
 #endif

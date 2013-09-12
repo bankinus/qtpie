@@ -1,3 +1,6 @@
+#ifndef TEST_MPSC
+#define TEST_MPSC
+
 /* Test fuer eine Queue.
 Jede Threadinstanz fuehr enqueue auf der Queue aus,
 ein einzelner thread entnimmt die Objekte wieder.
@@ -61,9 +64,9 @@ public:
 		while(index<ops){
 			i = FAA(&index,1);
 			
+			if (i<ops)
 			while (!(c = q->dequeue()));
 			chains[i] = c;	//Pointer??
-//			cout << "go_prod: " << i << endl;
 		}
 	}
 
@@ -75,9 +78,11 @@ public:
 		Chain *c;
 		while(index<ops){
 			i = FAA(&index,1);
-			
-			while (!(c = q->dequeue()));
-//			cout << "go_prod: " << i << endl;
+	//		cout << "consindex: " << i <<endl;
+			if (i<ops)
+			while (!(c = q->dequeue())){
+//				cout << "still trying" << endl;
+			}
 		}
 	}
 
@@ -88,8 +93,9 @@ public:
 		long i;
 		while(index<ops){
 			i = FAA(&index,1);
-			q->enqueue(&chains[i]);
-//			cout << "go_prod: " << i << endl;
+	//		cout << "prodindex: " << i <<endl;
+			if (i<ops)
+				q->enqueue(&chains[i]);
 		}
 	}
 
@@ -148,7 +154,7 @@ public:
 	}
 };
 
-	
+#endif	
 
 
 
