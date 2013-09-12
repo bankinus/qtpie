@@ -78,7 +78,7 @@ int main(){
 	//transaction queue
 
 	TransQueue *trans2 = new TransQueue();
-	Test_round t5(trans1,20, 5, NUMBA);
+	Test_round t5(trans2,20, 5, NUMBA);
 	cout << "test round mit transqueue beginnt" << endl;
 	time = t5.starttest();
 	cout << "Zeit benoetigt: " << time << "ms" << endl;
