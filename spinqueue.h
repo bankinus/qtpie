@@ -6,6 +6,7 @@
 #include "Chain.h"
 #include "spinlock.h"
 
+#include <iostream>
 
 class Spinqueue : public Queue {
 	private:
@@ -14,25 +15,22 @@ class Spinqueue : public Queue {
     Chain * volatile *tail;
 	uint8_t paddingt[CACHE_ALIGN - sizeof(Chain*)];
 
-	Spinlock *nqlock;
-	Spinlock *dqlock;
+	Spinlock *qlock;
 
 	public:
 	Spinqueue() INLINE_ATTR : head(0), tail(&head) {
 		nqlock = new Spinlock();
-		dqlock = new Spinlock();
 	}
 
 	void enqueue(Chain *chain) INLINE_ATTR
 	{
 		chain->next = 0;
-
 		//lock or begin transaction;
-		nqlock->lock();
+		qlock->lock();
 			*tail = chain;
 			tail = &chain->next;
 		//unlock or end transaction;
-		nqlock->unlock();
+		qlock->unlock();
 	}
 
 	Chain* dequeue() INLINE_ATTR
@@ -40,13 +38,13 @@ class Spinqueue : public Queue {
 		Chain *out;
 
 		//lock or begin transaction;
-		dqlock->lock();
+		qlock->lock();
 			if((out = head) && !(head = out->next))
 			{
 				tail = &head;
 			}
 		//unlock or end transaction;
-		dqlock->unlock();
+		qlock->unlock();
 
 		return out;
 	}
