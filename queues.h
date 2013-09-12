@@ -10,7 +10,9 @@
 #include "WnbsQueue.h"
 #include "MPSCQueue.h"
 #include "msqueue.h"
-
+#include "tlmutexqueue.h"
+#include "tlspinqueue.h"
+#include "tltransqueue.h"
 
 #endif
 

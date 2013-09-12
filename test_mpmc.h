@@ -78,10 +78,11 @@ public:
 		Chain *c;
 		while(index<ops){
 			i = FAA(&index,1);
-//			cout << "consindex: " << i <<endl;
+	//		cout << "consindex: " << i <<endl;
 			if (i<ops)
-			while (!(c = q->dequeue()));
+			while (!(c = q->dequeue())){
 //				cout << "still trying" << endl;
+			}
 		}
 	}
 
@@ -92,7 +93,7 @@ public:
 		long i;
 		while(index<ops){
 			i = FAA(&index,1);
-//			cout << "prodindex: " << i <<endl;
+	//		cout << "prodindex: " << i <<endl;
 			if (i<ops)
 				q->enqueue(&chains[i]);
 		}
