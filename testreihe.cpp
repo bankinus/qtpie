@@ -1,15 +1,7 @@
 
 #include <iostream>
 
-#include "test_round.h"
-#include "test_mpmc.h"
 #include "Chain.h"
-#include "simplequeue.h"
-#include "WnbsQueue.h"
-#include "MPSCQueue.h"
-#include "msqueue.h"
-#include "spinqueue.h"
-#include "transqueue.h"
 #include "tests.h"
 #include "queues.h"
 
@@ -34,6 +26,11 @@ int main(){
 	time = c1.starttest();
 	cout << "Zeit benoetigt: " << time << "ms" << endl;
 
+	MutexQueue *mut1 = new MutexQueue();
+	Test_mpmc c6(mut1, 5, NUMBA);
+	cout << "test msmc mit mutexqueue beginnt" << endl;
+	time = c6.starttest();
+	cout << "Zeit benoetigt: " << time << "ms" << endl;
 //nonblocking queues
 	
 
@@ -80,6 +77,11 @@ int main(){
 	time = t1.starttest();
 	cout << "Zeit benoetigt: " << time << "ms" << endl;
 
+	MutexQueue *mut2 = new MutexQueue();
+	Test_round t6(mut2,20,5,NUMBA);
+	cout << "test round mit mutexqueue beginnt" << endl;
+	time = t6.starttest();
+	cout << "Zeit benoetigt: " << time << "ms" << endl;
 
 //nonblocking queues
   
