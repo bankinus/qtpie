@@ -21,6 +21,9 @@ class MutexQueue : public Queue {
 	MutexQueue() INLINE_ATTR : head(0), tail(&head) {
 		mut = new mutex();
 	}
+	~MutexQueue(){
+		delete mut;
+	}
 
 	void enqueue(Chain *chain) INLINE_ATTR
 	{

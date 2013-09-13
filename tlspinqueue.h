@@ -17,16 +17,21 @@ class TLSpinQueue : public Queue {
 
 	Spinlock *nqlock;
 	Spinlock *dqlock;
-	Chain c;
+	Chain *c;
 
 
 	public:
 	TLSpinQueue() INLINE_ATTR {
 		c = new Chain(0);
-		head = &c;
-		tail = &c;
+		head = c;
+		tail = c;
 		nqlock = new Spinlock();
 		dqlock = new Spinlock();
+	}
+	~TLSpinQueue(){
+		delete c;
+		delete nqlock;
+		delete dqlock;
 	}
 
 	void enqueue(Chain *chain) INLINE_ATTR volatile
