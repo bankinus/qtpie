@@ -23,7 +23,7 @@ using namespace std;
 class Test_mpmc{
 
 public:
-	Queue* q;	//Queue to enqueue
+	Queue* q;		//Queue to enqueue
 	Chain* beginchains;	//hieraus entnehmen producers ihre Daten
 	Chain* endchains;	//hierhinein speichern consumer ihre Daten
 	int prods;
@@ -46,7 +46,7 @@ public:
 	}
 
 	Test_mpmc(Queue *q, int producers, long ops) : q(q), prods(producers), cons(1), ops(ops), indexprod(0), indexcon(0), nodata(1) {	//single consumer	
-			//prodarray fuellen mit entprechender anzahl an elementen
+		//prodarray fuellen mit entprechender anzahl an elementen
 
 		beginchains = new Chain[ops]();
 		
@@ -84,10 +84,8 @@ public:
 		Chain *c;
 		while(index<ops){
 			i = FAA(&index,1);
-	//		cout << "consindex: " << i <<endl;
 			if (i<ops)
 			while (!(c = q->dequeue())){
-//				cout << "still trying" << endl;
 			}
 		}
 	}
@@ -99,7 +97,6 @@ public:
 		long i;
 		while(index<ops){
 			i = FAA(&index,1);
-	//		cout << "prodindex: " << i <<endl;
 			if (i<ops)
 				q->enqueue(&chains[i]);
 		}
@@ -139,12 +136,10 @@ public:
 		//join threads
 		for (i=0; i<prods; i++){
 			thrarrayprods[i].join();
-//			i--; //endlosscheife
 		}
 
 		for (i=0; i<cons; i++){
 			thrarraycons[i].join();
-//			i--; //endlosscheife
 		}
 
 		clock_gettime(CLOCK_MONOTONIC, &end);
