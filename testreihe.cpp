@@ -22,7 +22,7 @@ using namespace std;
 #define testround(Type, elements, threads, ops, output) { \
 	long time;	\
 	Type *queue = new Type();	\
-	Test_round t(queue,elements,threads,ops);	\
+	Test_round t(queue, elements, threads, ops);	\
 	output(Type);	\
 	time = t.starttest();	\
 	cout << time << "ms" << endl;	\
@@ -33,10 +33,35 @@ using namespace std;
 #define testmpsc(Type, threads, ops, output) {	\
 	long time;	\
 	Type *queue = new Type();	\
-	Test_mpmc t(queue,threads,ops);	\
-	output(type);	\
+	Test_mpmc t(queue, threads, ops);	\
+	output(Type);	\
 	time = t.starttest();	\
 	cout << time << "ms" << endl;	\
+	t.cleanup();	\
+	delete queue;	\
+}
+
+
+
+#define testqtv(QType, TType, stream, variable, stop, vopt, vthreads, vops) {	\
+	stream << #QType << ",";	\
+	{	\
+		long opt = vopt;	\
+		long threads = vthreads;	\
+		long ops = vops;	\
+		for(; variable <= stop; variable++){	\
+			testqt(QType, TType, stream, opt, threads, ops);	\
+		}	\
+		stream << endl;	\
+	}	\
+}
+
+#define testqt(QType, TType, stream, opt, threads, ops) {	\
+	long time;	\
+	QType *queue = new QType();	\
+	TType t(queue, opt, threads, ops);	\
+	time = t.starttest();	\
+	stream << "\t" << time << ",";	\
 	t.cleanup();	\
 	delete queue;	\
 }
@@ -93,6 +118,9 @@ void compareall(long elements, int threads, long opsround, long opsmpsc){
 
 int main(){
 	
+	testqtv(MSQueue, Test_mpmc, cout, threads, 10, 1, 1, 1<<20);
+//	testqt(MSQueue, Test_mpmc, cout, 1, 1, 1<<20);
 //	compareall(4,6,1<<20,1<<20);
-	morethreads(MSQueue, 20, 1<<25, 1<<20, 1);
+//	morethreads(MSQueue, 20, 1<<25, 1<<20, 1);
+//	morethreads(TLSpinQueue, 20, 1<<25, 1<<20, 1);
 }
