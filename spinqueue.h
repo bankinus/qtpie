@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-class Spinqueue : public Queue {
+class SpinQueue : public Queue {
 	private:
     Chain *head;
 	uint8_t paddingh[CACHE_ALIGN - sizeof(Chain*)];
