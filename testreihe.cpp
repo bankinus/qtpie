@@ -43,13 +43,13 @@ using namespace std;
 
 
 
-#define testqtv(QType, TType, stream, variable, stop, vopt, vthreads, vops) {	\
+#define testqtv(QType, TType, stream, variable, step, stop, vopt, vthreads, vops) {	\
 	stream << #QType << ",";	\
 	{	\
 		long opt = vopt;	\
 		long threads = vthreads;	\
 		long ops = vops;	\
-		for(; variable <= stop; variable++){	\
+		for(; variable <= stop; variable += step){	\
 			testqt(QType, TType, stream, opt, threads, ops);	\
 		}	\
 		stream << endl;	\
@@ -118,7 +118,7 @@ void compareall(long elements, int threads, long opsround, long opsmpsc){
 
 int main(){
 	
-	testqtv(MSQueue, Test_mpmc, cout, threads, 10, 1, 1, 1<<20);
+	testqtv(MSQueue, Test_mpmc, cout, threads, 1, 10, 1, 1, 1<<20);
 //	testqt(MSQueue, Test_mpmc, cout, 1, 1, 1<<20);
 //	compareall(4,6,1<<20,1<<20);
 //	morethreads(MSQueue, 20, 1<<25, 1<<20, 1);
