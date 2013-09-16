@@ -37,13 +37,12 @@ public:
 	Test_mpmc_check(Queue *q, int producers, int consumers, long ops) : q(q), prods(producers), cons(consumers), ops(ops), indexprod(0), indexcon(0) {	
 		//prodarray fuellen mit entprechender anzahl an elementen
 
-		beginchains = new Chain[ops]();
-		endchains = new Chain[ops]();
+		beginchains = new Chain[ops];
+		endchains = new Chain[ops];
 		
 		for(uintptr_t i=0; i<ops; i++){
 			beginchains[i]= Chain();
 			beginchains[i].data = (void*)i;
-//			cout << "constr:\t" << beginchains[i].data << "\ti: "<< i<< endl;
 		}
 			
 	}
@@ -68,7 +67,6 @@ public:
 			if (i<ops){
 				while (!(c = q->dequeue()));
 				chains[i].data = c->data;	//Pointer??
-//				cout << "cons:\t" << (uintptr_t) c[i].data << "\ti: "<< i<< endl;
 
 			}
 		}
@@ -82,7 +80,6 @@ public:
 		while(index<ops){
 			i = FAA(&index,1);
 			if (i<ops)
-//				cout << "prod:\t" << (uintptr_t) chains[i].data << "\ti: "<< i<< endl;
 				q->enqueue(&chains[i]);
 
 		}

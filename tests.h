@@ -3,6 +3,7 @@
 
 #include "test_round.h"
 #include "test_mpmc.h"
+#include "test_mpmc_check.h"
 
 #endif
 
