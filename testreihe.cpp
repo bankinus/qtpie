@@ -103,24 +103,11 @@ void compareall(long elements, int threads, long opsround, long opsmpsc){
 
 }
 
-
-#define morethreads(Type, end, opsround, opsmpsc, quotient) {	\
-	cout << "test round mit " << #Type << " beginnt. \tOperationen: " << opsround << "\tElemente: #Threads/" << quotient << ".\tSteigende Threadzahl von 1 bis " << end << endl;	\
-	for(int threads = 1; threads<=end; threads++){	\
-		testround(Type, threads/quotient, threads, opsround, PRINT_NOTHING);	\
-	}	\
-	cout << "test mpsc mit " << #Type << " beginnt. \tOperationen: " << opsmpsc <<  ".\tSteigende Threadzahl von 1 bis " << end << endl;	\
-	for(int threads = 1; threads<=end; threads++){	\
-		testmpsc(Type, threads, opsmpsc, PRINT_NOTHING);	\
-	}	\
-}
-
-
 int main(){
 	
-	testqtv(MSQueue, Test_mpmc, cout, threads, 1, 10, 1, 1, 1<<20);
-//	testqt(MSQueue, Test_mpmc, cout, 1, 1, 1<<20);
-//	compareall(4,6,1<<20,1<<20);
-//	morethreads(MSQueue, 20, 1<<25, 1<<20, 1);
-//	morethreads(TLSpinQueue, 20, 1<<25, 1<<20, 1);
+	testqtv(TLTransQueue,	Test_mpmc_check,	cout,	threads,	1,	8,	8,	8,	1<<22);
+//	testqtv(MutexQueue,	Test_mpmc,	cout,	threads,	1,	10,	1,	1,	1<<20);
+//	testqtv(TLSpinQueue,	Test_mpmc,	cout,	threads,	1,	10,	1,	1,	1<<20);
+//	testqtv(TLMutexQueue,	Test_mpmc,	cout,	threads,	1,	10,	1,	1,	1<<20);
+//	testqtv(MSQueue,	Test_mpmc,	cout,	threads,	1,	10,	1,	1,	1<<20);
 }

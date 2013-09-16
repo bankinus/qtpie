@@ -45,14 +45,13 @@ class TLTransQueue : public Queue {
 		Chain *newhead;
 		
 
-		//lock or begin transaction;
 		XFAIL(lock2);
+		newhead	= head->next;
+		if (newhead == 0){
+			return 0;
+		}
+		//lock or begin transaction;
 		XBEGIN(lock2);
-			newhead	= head->next;
-			if (newhead == 0){
-				XEND();
-				return 0;
-			}
 			head->data = newhead->data;
 			out = head;
 			head = newhead;
