@@ -1,5 +1,5 @@
-#ifndef TEST_MPSC
-#define TEST_MPSC
+#ifndef TEST_MPSC_CKECK
+#define TEST_MPSC_CHECK
 
 /* Test fuer eine Queue.
 Jede Threadinstanz fuehr enqueue auf der Queue aus,
@@ -20,7 +20,7 @@ ein einzelner thread entnimmt die Objekte wieder.
 
 using namespace std;
 
-class Test_mpmc{
+class Test_mpmc_check{
 
 public:
 	Queue* q;		//Queue to enqueue
@@ -31,34 +31,29 @@ public:
 	long ops;
 	long indexprod;
 	long indexcon;
-	bool nodata;
 
-	Test_mpmc(Queue *q, int producers, int consumers, long ops) : q(q), prods(producers), cons(consumers), ops(ops), indexprod(0), indexcon(0), nodata(0) {	
+
+
+	Test_mpmc_check(Queue *q, int producers, int consumers, long ops) : q(q), prods(producers), cons(consumers), ops(ops), indexprod(0), indexcon(0) {	
 		//prodarray fuellen mit entprechender anzahl an elementen
 
 		beginchains = new Chain[ops]();
 		endchains = new Chain[ops]();
 		
-		for(int i=0; i<ops; i++){
+		for(uintptr_t i=0; i<ops; i++){
 			beginchains[i]= Chain();
+			beginchains[i].data = (void*)i;
+//			cout << "constr:\t" << beginchains[i].data << "\ti: "<< i<< endl;
 		}
 			
 	}
 
-	Test_mpmc(Queue *q, int producers, long ops) : q(q), prods(producers), cons(1), ops(ops), indexprod(0), indexcon(0), nodata(1) {	//single consumer	
-		//prodarray fuellen mit entprechender anzahl an elementen
+	Test_mpmc_check(Queue *q, int producers, long ops) : Test_mpmc_check(q, producers, 1, ops) {};
 
-		beginchains = new Chain[ops]();
-		
-		for(int i=0; i<ops; i++){
-			beginchains[i]= Chain();
-		}
-	}	
 
 	void cleanup(){
 		delete[] beginchains;
-		if (!nodata)
-			delete[] endchains;
+		delete[] endchains;
 	}
 
 	static void go_cons(long ops, long &index, Queue *q, Chain *chains){
@@ -72,21 +67,9 @@ public:
 			
 			if (i<ops){
 				while (!(c = q->dequeue()));
-				chains[i] = c;	//Pointer??
-			}
-		}
-	}
+				chains[i].data = c->data;	//Pointer??
+//				cout << "cons:\t" << (uintptr_t) c[i].data << "\ti: "<< i<< endl;
 
-	static void go_cons_nodata(long ops, long &index, Queue *q){
-		//entfernt daten aus q
-		//consumer
-
-		long i;
-		Chain *c;
-		while(index<ops){
-			i = FAA(&index,1);
-			if (i<ops)
-			while (!(c = q->dequeue())){
 			}
 		}
 	}
@@ -99,11 +82,29 @@ public:
 		while(index<ops){
 			i = FAA(&index,1);
 			if (i<ops)
+//				cout << "prod:\t" << (uintptr_t) chains[i].data << "\ti: "<< i<< endl;
 				q->enqueue(&chains[i]);
+
 		}
 	}
 
-
+	int check(){
+		int *checks = new int[ops];
+		int errors = 0;
+		for (int i=0; i< ops; i++){
+			checks[i] = 0;
+		}
+		for (int i=0; i< ops; i++){
+			if(!((uintptr_t) endchains[i].data > ops)){
+				checks[(uintptr_t) endchains[i].data] += 1;
+			}
+		}
+		for (int i=0; i< ops; i++){
+			if (checks[i] != 1)
+				++errors;
+		}	
+		return errors;
+	}
 
 	long starttest(){
 		//startet threads,
@@ -116,18 +117,9 @@ public:
 		long i;
 
 		//start consumer threads
-		if (nodata){
-			for (i=0; i<cons; i++){
-				thrarraycons[i]= thread(go_cons_nodata, ops, std::ref(indexcon), q);
-			}
-		} else {
-			for (i=0; i<cons; i++){
-				thrarraycons[i]= thread(go_cons, ops, std::ref(indexcon), q, endchains);
-			}
+		for (i=0; i<cons; i++){
+			thrarraycons[i]= thread(go_cons, ops, std::ref(indexcon), q, endchains);
 		}
-		struct timespec begin;
-		struct timespec end;
-		clock_gettime(CLOCK_MONOTONIC, &begin);
 
 		//start producing threads
 		for (i=0; i<prods; i++){
@@ -142,18 +134,9 @@ public:
 		for (i=0; i<cons; i++){
 			thrarraycons[i].join();
 		}
-
-		clock_gettime(CLOCK_MONOTONIC, &end);
-		time_t sec;
-		long nsec;
-		sec = end.tv_sec - begin.tv_sec;
-		nsec = end.tv_nsec - begin.tv_nsec;
-		nsec /= 1000000;
-		sec *= 1000;
-
 		delete[] thrarraycons;
 		delete[] thrarrayprods;
-		return sec+nsec;
+		return check();
 
 	}
 };
