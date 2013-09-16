@@ -26,7 +26,7 @@ class SpinQueue : public Queue {
 		delete qlock;
 	}
 
-	void enqueue(Chain *chain) INLINE_ATTR
+	void enqueue(Chain *chain) INLINE_ATTR volatile
 	{
 		chain->next = 0;
 		//lock or begin transaction;
@@ -37,7 +37,7 @@ class SpinQueue : public Queue {
 		qlock->unlock();
 	}
 
-	Chain* dequeue() INLINE_ATTR
+	Chain* dequeue() INLINE_ATTR volatile
 	{
 		Chain *out;
 

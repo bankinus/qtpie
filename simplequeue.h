@@ -17,7 +17,7 @@ class SimpleQueue : public Queue {
 	public:
 	SimpleQueue() INLINE_ATTR : head(0), tail(&head) {}
 
-	void enqueue(Chain *chain) INLINE_ATTR
+	void enqueue(Chain *chain) INLINE_ATTR volatile
 	{
 		chain->next = 0;
 
@@ -27,7 +27,7 @@ class SimpleQueue : public Queue {
 		//unlock or end transaction;
 	}
 
-	Chain* dequeue() INLINE_ATTR
+	Chain* dequeue() volatile INLINE_ATTR
 	{
 		Chain *out;
 

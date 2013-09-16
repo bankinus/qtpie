@@ -25,7 +25,7 @@ class MutexQueue : public Queue {
 		delete mut;
 	}
 
-	void enqueue(Chain *chain) INLINE_ATTR
+	void enqueue(Chain *chain) INLINE_ATTR volatile
 	{
 		chain->next = 0;
 		//lock or begin transaction;
@@ -36,7 +36,7 @@ class MutexQueue : public Queue {
 		mut->unlock();
 	}
 
-	Chain* dequeue() INLINE_ATTR
+	Chain* dequeue() INLINE_ATTR volatile
 	{
 		Chain *out;
 

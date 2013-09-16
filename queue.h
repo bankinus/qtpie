@@ -3,10 +3,11 @@
 
 #include "Chain.h"
 
+
 class Queue{
 	public:
-	virtual void enqueue(Chain* chain) {}
-	virtual Chain* dequeue(){}
+	virtual void enqueue(Chain* chain) volatile{}
+	virtual Chain* dequeue() volatile{}
 
 };
 

@@ -18,7 +18,7 @@ class TransQueue : public Queue {
 	public:
 	TransQueue() INLINE_ATTR : head(0), tail(&head) {}
 
-	void enqueue(Chain *chain) INLINE_ATTR
+	void enqueue(Chain *chain) INLINE_ATTR volatile
 	{
 		chain->next = 0;
 		//lock or begin transaction;
@@ -30,7 +30,7 @@ class TransQueue : public Queue {
 		XEND();
 	}
 
-	Chain* dequeue() INLINE_ATTR
+	Chain* dequeue() INLINE_ATTR volatile
 	{
 		Chain *out;
 
