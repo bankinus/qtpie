@@ -15,7 +15,7 @@ class MSQueue : public Queue
 	CPointer<Chain> tail;
 	Chain dummy;
 
-	MSQueue() INLINE_ATTR {head.setPtr(&dummy); tail.setPtr(&dummy);}
+	MSQueue() INLINE_ATTR : dummy(0) {head.setPtr(&dummy); tail.setPtr(&dummy);}
 
 	bool isEmpty() volatile INLINE_ATTR
 	{
